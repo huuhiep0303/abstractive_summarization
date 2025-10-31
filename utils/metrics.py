@@ -1,5 +1,3 @@
-#Tạm thời, sửa trong tương lai
-
 import sklearn.metrics
 import numpy as np
 from scipy.stats import pearsonr as scipy_pearsonr

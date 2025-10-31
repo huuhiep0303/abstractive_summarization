@@ -27,12 +27,12 @@ class SummarizationDataset(Dataset):
         self.vocab = self.build_vocab_from_merges(merges)
         
     def load_data(self, data_path: str) -> List[Dict]:
-        """Load JSON data"""
+        # Load JSON data
         with open(data_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     
     def build_vocab_from_merges(self, merges: List[Tuple[str, str]]) -> Dict[str, int]:
-        """Build vocabulary mapping from BPE merges"""
+        # Build vocabulary mapping from BPE merges
         vocab = {'<pad>': 0, '<unk>': 1, '<bos>': 2, '<eos>': 3}
         idx = 4
         
@@ -46,7 +46,7 @@ class SummarizationDataset(Dataset):
         return vocab
     
     def tokenize_and_encode(self, text: str) -> List[int]:
-        """Tokenize text and convert to IDs"""
+        # Tokenize text and convert to IDs
         try:
             tokens = encode(text, self.merges)
             # Convert tokens to IDs
@@ -58,7 +58,6 @@ class SummarizationDataset(Dataset):
                     token_ids.append(self.vocab['<unk>'])
             return token_ids
         except:
-            # Fallback: simple word tokenization
             words = text.split()[:self.max_article_length]
             return [self.vocab.get(word, self.vocab['<unk>']) for word in words]
     
@@ -86,7 +85,6 @@ class SummarizationDataset(Dataset):
         }
 
 def collate_fn(batch):
-    """Custom collate function for padding sequences"""
     max_article_len = max([len(item['article_ids']) for item in batch])
     max_summary_len = max([len(item['summary_ids']) for item in batch])
     

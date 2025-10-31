@@ -19,12 +19,9 @@ def generate_summary(model, article_tokens, max_length=128):
     """Generate summary from article tokens using the trained model"""
     model.eval()
     with torch.no_grad():
-        # Convert tokens to tensor (implement based on your tokenizer)
-        # This is a placeholder - you'll need to implement proper token-to-id conversion
         src = torch.tensor([article_tokens])  # Add batch dimension
-        
         # Initialize decoder input with start token
-        tgt = torch.tensor([[0]])  # Start with special token
+        tgt = torch.tensor([[0]]) 
         
         for _ in range(max_length):
             output = model(src, tgt)
@@ -43,38 +40,34 @@ def evaluate_model(model_path='models/summarizer_model.pth',
                   max_samples=None):
     """Evaluate the trained model on test data"""
     
-    print("🔍 Starting Model Evaluation...")
+    print("Starting Model Evaluation...")
     print("=" * 50)
     
     # Load BPE merges
-    print("📝 Loading BPE tokenizer...")
+    print("Loading BPE tokenizer...")
     merges = load_merges(merges_path)
     
     # Estimate vocab size (you may need to adjust this)
     vocab_size = len(set([token for merge in merges for token in merge])) + 1000
     
-    # Load trained model
-    print("🤖 Loading trained model...")
+    print("Loading trained model...")
     model = load_trained_model(model_path, vocab_size)
-    
-    # Load test dataset
-    print("📊 Loading test dataset...")
+    print("Loading test dataset...")
     test_dataset = SummarizationDataset(test_data_path, merges)
     
     if max_samples:
         test_size = min(max_samples, len(test_dataset))
     else:
         test_size = len(test_dataset)
-    
-    print(f"📋 Evaluating on {test_size} samples...")
-    
+    print(f"Evaluating on {test_size} samples...")
+
     predictions = []
     references = []
     
     # Generate predictions
     for i in range(test_size):
         if i % 50 == 0:
-            print(f"⏳ Processing sample {i}/{test_size}...")
+            print(f"Processing sample {i}/{test_size}...")
             
         item = test_dataset[i]
         article_tokens = item['article_tokens']
@@ -90,11 +83,11 @@ def evaluate_model(model_path='models/summarizer_model.pth',
         references.append(reference_summary)
     
     # Calculate metrics
-    print("\n📈 Calculating evaluation metrics...")
+    print("\nCalculating evaluation metrics...")
     
     # ROUGE scores
     rouge_scores = rouge(references, predictions)
-    print("\n🎯 ROUGE Scores:")
+    print("\nROUGE Scores:")
     for metric, score in rouge_scores.items():
         print(f"   {metric}: {score:.4f}")
     
@@ -103,12 +96,12 @@ def evaluate_model(model_path='models/summarizer_model.pth',
         # For classification tasks (you may need to adapt this)
         acc_score = accuracy(references, predictions)
         f1_score = macro_f1(references, predictions)
-        
-        print(f"\n📊 Additional Metrics:")
+
+        print(f"\nAdditional Metrics:")
         print(f"   Accuracy: {acc_score['accuracy']:.2f}%")
         print(f"   Macro F1: {f1_score['f1_macro']:.2f}%")
     except:
-        print("\n⚠️  Additional metrics not applicable for text generation")
+        print("\nAdditional metrics not applicable for text generation")
     
     # Save results
     results = {
@@ -121,11 +114,11 @@ def evaluate_model(model_path='models/summarizer_model.pth',
     results_path = 'evaluation_results.json'
     with open(results_path, 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
-    
-    print(f"\n💾 Results saved to {results_path}")
-    
+
+    print(f"\nResults saved to {results_path}")
+
     # Show sample predictions
-    print("\n📝 Sample Predictions:")
+    print("\nSample Predictions:")
     print("-" * 50)
     for i in range(min(3, len(predictions))):
         print(f"\nSample {i+1}:")
@@ -135,9 +128,6 @@ def evaluate_model(model_path='models/summarizer_model.pth',
     return rouge_scores
 
 def tokens_to_text(tokens: List[int], merges: List[Tuple[str, str]]) -> str:
-    """Convert token IDs back to text (placeholder implementation)"""
-    # This is a placeholder - implement based on your tokenizer design
-    # You'll need to maintain a vocabulary mapping during training
     return " ".join([f"token_{t}" for t in tokens])
 
 if __name__ == "__main__":
@@ -148,4 +138,4 @@ if __name__ == "__main__":
         max_samples=100  # Set to None for full evaluation
     )
     
-    print("\n✅ Evaluation completed!")
+    print("\nEvaluation completed!")

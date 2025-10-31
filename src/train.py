@@ -16,7 +16,6 @@ from tokenizer import load_merges
 from tqdm import tqdm
 
 def create_src_tgt_mask(src_len, tgt_len, device):
-    """Create masks for transformer"""
     # Source mask (padding mask)
     src_mask = torch.zeros(src_len, src_len).to(device)
     
@@ -26,24 +25,23 @@ def create_src_tgt_mask(src_len, tgt_len, device):
     return src_mask, tgt_mask
 
 def train_model():
-    print("🚀 Starting Vietnamese Abstractive Summarization Training...")
+    print("Starting Vietnamese Abstractive Summarization Training...")
     print("=" * 60)
     
     # Check if CUDA is available
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print(f"🔧 Using device: {device}")
+    print(f"Using device: {device}")
     
     # Load BPE merges
-    print("📝 Loading BPE tokenizer...")
+    print("Loading BPE tokenizer...")
     try:
         merges = load_merges('bpe_tokenizer/bpe_merges.json')
-        print(f"✅ Loaded {len(merges)} BPE merges")
+        print(f"Loaded {len(merges)} BPE merges")
     except Exception as e:
-        print(f"❌ Error loading BPE merges: {e}")
+        print(f"Error loading BPE merges: {e}")
         return
     
-    # Create data loaders
-    print("📊 Creating data loaders...")
+    print("Creating data loaders...")
     try:
         train_loader, val_loader, test_loader, vocab_size = create_data_loaders(
             'data/raw/train.json',
@@ -52,16 +50,15 @@ def train_model():
             merges,
             batch_size=4  # Reduced batch size for memory
         )
-        print(f"✅ Data loaders created. Vocab size: {vocab_size}")
-        print(f"   - Train batches: {len(train_loader)}")
-        print(f"   - Val batches: {len(val_loader)}")
-        print(f"   - Test batches: {len(test_loader)}")
+        print(f"Data loaders created. Vocab size: {vocab_size}")
+        print(f"Train batches: {len(train_loader)}")
+        print(f"Val batches: {len(val_loader)}")
+        print(f"Test batches: {len(test_loader)}")
     except Exception as e:
-        print(f"❌ Error creating data loaders: {e}")
+        print(f"Error creating data loaders: {e}")
         return
     
-    # Initialize model
-    print("🤖 Initializing model...")
+    print("Initializing model...")
     model = TransformerSummarizer(
         vocab_size=vocab_size,
         d_model=256,  # Reduced for memory
@@ -74,8 +71,8 @@ def train_model():
     # Count parameters
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f"📈 Model parameters: {total_params:,} total, {trainable_params:,} trainable")
-    
+    print(f"Model parameters: {total_params:,} total, {trainable_params:,} trainable")
+
     # Training setup
     criterion = nn.CrossEntropyLoss(ignore_index=0)  # Ignore padding
     optimizer = optim.Adam(model.parameters(), lr=5e-4)
@@ -84,11 +81,11 @@ def train_model():
     # Training loop
     num_epochs = 5  # Reduced for testing
     best_val_loss = float('inf')
-    
-    print(f"\n🏃 Starting training for {num_epochs} epochs...")
-    
+
+    print(f"\nStarting training for {num_epochs} epochs...")
+
     for epoch in range(num_epochs):
-        print(f"\n📅 Epoch {epoch+1}/{num_epochs}")
+        print(f"\nEpoch {epoch+1}/{num_epochs}")
         print("-" * 40)
         
         # Training phase
@@ -106,7 +103,6 @@ def train_model():
                 src = batch['articles'].to(device)
                 tgt = batch['summaries'].to(device)
                 
-                # Create input and target for decoder
                 tgt_input = tgt[:, :-1]  # Remove last token
                 tgt_output = tgt[:, 1:]  # Remove first token
                 
@@ -138,25 +134,25 @@ def train_model():
                     break
                     
             except Exception as e:
-                print(f"❌ Error in training batch {batch_idx}: {e}")
+                print(f"Error in training batch {batch_idx}: {e}")
                 continue
         
         avg_train_loss = total_train_loss / max(num_batches, 1)
-        print(f"📊 Training Loss: {avg_train_loss:.4f}")
-        
+        print(f"Training Loss: {avg_train_loss:.4f}")
+
         # Validation phase
         if epoch % 1 == 0:  # Validate every epoch
             val_loss = validate_model(model, val_loader, criterion, device, vocab_size)
-            print(f"📊 Validation Loss: {val_loss:.4f}")
-            
+            print(f"Validation Loss: {val_loss:.4f}")
+
             # Learning rate scheduling
             scheduler.step(val_loss)
-            print(f"📊 Learning Rate: {optimizer.param_groups[0]['lr']:.6f}")
-            
+            print(f"Learning Rate: {optimizer.param_groups[0]['lr']:.6f}")
+
             # Save best model
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
-                print("💾 Saving best model...")
+                print("Saving best model...")
                 Path('models').mkdir(exist_ok=True)
                 torch.save({
                     'epoch': epoch,
@@ -167,8 +163,8 @@ def train_model():
                     'vocab_size': vocab_size
                 }, 'models/best_model.pth')
     
-    print("\n✅ Training completed!")
-    print(f"🏆 Best validation loss: {best_val_loss:.4f}")
+    print("\nTraining completed!")
+    print(f"Best validation loss: {best_val_loss:.4f}")
 
 def validate_model(model, val_loader, criterion, device, vocab_size, max_batches=50):
     """Validate the model"""
@@ -205,7 +201,7 @@ def validate_model(model, val_loader, criterion, device, vocab_size, max_batches
                     break
                     
             except Exception as e:
-                print(f"❌ Error in validation batch {batch_idx}: {e}")
+                print(f"Error in validation batch {batch_idx}: {e}")
                 continue
     
     return total_val_loss / max(num_batches, 1)

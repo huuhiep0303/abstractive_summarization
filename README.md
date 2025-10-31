@@ -2,7 +2,7 @@
 
 Một project nghiên cứu về tự động tóm tắt văn bản tiếng Việt sử dụng mô hình Transformer.
 
-## 📋 Tổng quan
+## Tổng quan
 
 Project này xây dựng một hệ thống tóm tắt trừu tượng (abstractive summarization) cho văn bản tiếng Việt, sử dụng:
 - Dataset VietNews-Abs-Sum từ HuggingFace
@@ -10,7 +10,7 @@ Project này xây dựng một hệ thống tóm tắt trừu tượng (abstract
 - Mô hình Transformer cho text summarization
 - Các metrics đánh giá ROUGE, F1, Accuracy
 
-## 🗂️ Cấu trúc Project
+## Cấu trúc Project
 
 ```
 Vietnamese-Abstractive-Summarization/
@@ -33,7 +33,7 @@ Vietnamese-Abstractive-Summarization/
 └── requirements.txt           # Dependencies
 ```
 
-## 📊 Dataset
+## Dataset
 
 **VietNews-Abs-Sum** - Dataset tóm tắt tin tức tiếng Việt:
 - **Train**: 303,686 mẫu
@@ -42,7 +42,7 @@ Vietnamese-Abstractive-Summarization/
 - **Tổng dung lượng**: ~2.9GB
 - **Features**: guid, title, abstract, article
 
-## 🚀 Cách chạy Project
+## Cách chạy Project
 
 ### 1. Cài đặt môi trường
 
@@ -88,7 +88,7 @@ Notebook này sẽ:
 python src/train.py
 ```
 
-## 🛠️ Công nghệ sử dụng
+## Công nghệ sử dụng
 
 - **Python**: Ngôn ngữ chính
 - **PyTorch/TensorFlow**: Framework deep learning
@@ -97,40 +97,40 @@ python src/train.py
 - **Transformer**: Kiến trúc mô hình
 - **ROUGE**: Metrics đánh giá
 
-## 📈 Metrics đánh giá
+## Metrics đánh giá
 
 Project sử dụng các metrics trong `utils/metrics.py`:
 - **ROUGE**: ROUGE-1, ROUGE-2, ROUGE-L
 - **F1 Score**: Macro F1
 - **Accuracy**: Độ chính xác
 
-## 🔧 Tiến độ hiện tại
+## Tiến độ hiện tại
 
-### ✅ Đã hoàn thành:
+### Đã hoàn thành:
 - [x] Thiết lập cấu trúc project
 - [x] Download dataset VietNews-Abs-Sum
 - [x] Implement BPE tokenizer
 - [x] Thiết lập metrics đánh giá
 
-### 🚧 Đang thực hiện:
+### Đang thực hiện:
 - [ ] Hoàn thiện mô hình Transformer
 - [ ] Script training
 - [ ] Preprocessing data
 
-### 📝 Kế hoạch:
+### Kế hoạch:
 - [ ] Huấn luyện mô hình
 - [ ] Đánh giá performance
 - [ ] Fine-tuning hyperparameters
 - [ ] Demo ứng dụng
 
-## 💡 Ghi chú
+## Ghi chú
 
 1. **Dataset**: Đã download thành công với 438,336 mẫu tổng cộng
 2. **Tokenizer**: BPE tokenizer đã được implement với preprocessing tiếng Việt
 3. **Model**: Transformer summarizer đang trong giai đoạn phát triển
 4. **Metrics**: Sẵn sàng cho việc đánh giá model
 
-## 📚 Tài liệu tham khảo
+## Tài liệu tham khảo
 
 - [VietNews-Abs-Sum Dataset](https://huggingface.co/datasets/ithieund/VietNews-Abs-Sum)
 - [Transformer Architecture](https://arxiv.org/abs/1706.03762)
